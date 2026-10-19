@@ -1,0 +1,26 @@
+# Configuração do Supabase local/CLI. No painel Cloud, aplique os MESMOS valores em Authentication.
+project_id = "bandmed"
+
+[auth]
+enable_signup = false              # CRÍTICO: ninguém cria conta sozinho; contas só pelas Edge Functions
+minimum_password_length = 10
+password_requirements = "lower_upper_letters_digits"
+jwt_expiry = 3600
+enable_refresh_token_rotation = true
+
+[auth.email]
+enable_confirmations = true
+double_confirm_changes = true
+
+[auth.mfa.totp]
+enroll_enabled = true              # 2FA real (TOTP). Exigir para admin/director/financeiro na app (aal2)
+verify_enabled = true
+
+[functions.register-institution]
+verify_jwt = false                 # chamada pública (registo livre; escola nasce em teste de 30 dias)
+[functions.create-user]
+verify_jwt = true
+[functions.delete-user]
+verify_jwt = true
+[functions.school-backups]
+verify_jwt = false                 # a função valida ela própria: sessão do administrador OU segredo do agendador (pg_cron)
